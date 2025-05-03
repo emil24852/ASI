@@ -1,0 +1,31 @@
+raw_data:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/data1.csv
+
+cleaned_data:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/cleaned_data.parquet
+
+data_duration:
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/data_duration.parquet
+
+feateng_data:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/feateng_data.parquet
+
+train_data:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/train_data.parquet
+
+test_data:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/test_data.parquet
+
+best_model:
+  type: pickle.PickleDataset
+  filepath: data/06_models/best_model_automl.pkl
+
+model_metrics:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/model_metrics.parquet
