@@ -22,6 +22,10 @@ test_data:
   type: pandas.ParquetDataset
   filepath: data/05_model_input/test_data.parquet
 
+model_columns:
+  type: pickle.PickleDataset
+  filepath: data/06_models/model_columns.pkl
+
 best_model:
   type: pickle.PickleDataset
   filepath: data/06_models/best_model_automl.pkl

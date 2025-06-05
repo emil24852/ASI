@@ -11,7 +11,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         df = df.drop(columns=['flight'])
     return df
 
-
 def duration_to_minutes(df: pd.DataFrame) -> pd.DataFrame:
     """
     Konwersja kolumny 'duration' z formatu h.mm do całkowitej liczby minut:
@@ -23,12 +22,11 @@ def duration_to_minutes(df: pd.DataFrame) -> pd.DataFrame:
     df['duration_mins'] = hours * 60 + mins
     return df.drop(columns=['duration'])
 
-
 def encode_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Inżynieria cech:
     1. Mapowanie liczby przystanków ('stops') na wartości numeryczne
-    2. One-hot encoding dla wybranych kolumn kategorycznych
+    2. One-hot encoding dla wybranych kolumn kategorycznych (drop_first=False)
     3. Wypełnienie wszelkich braków zerami
     """
     stops_map = {
@@ -48,11 +46,9 @@ def encode_features(df: pd.DataFrame) -> pd.DataFrame:
         'arrival_time',
         'class'
     ]
-
-    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=False)
 
     return df.fillna(0)
-
 
 def train_test_split(df: pd.DataFrame, frac: float = 0.8):
     """
@@ -61,7 +57,5 @@ def train_test_split(df: pd.DataFrame, frac: float = 0.8):
     - frac określa ułamek na trening (reszta to test)
     """
     df_shuffled = df.sample(frac=1, random_state=42).reset_index(drop=True)
-
     split_idx = int(frac * len(df_shuffled))
-
     return df_shuffled.iloc[:split_idx], df_shuffled.iloc[split_idx:]
