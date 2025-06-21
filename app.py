@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
-import pickle
-import os
+
+from src.flight_price_prediction.io import (
+    load_blob_df,
+    load_blob_pickle,
+)
 
 from src.flight_price_prediction.pipelines.data_preparation.nodes import (
     clean_data,
@@ -9,18 +12,13 @@ from src.flight_price_prediction.pipelines.data_preparation.nodes import (
     encode_features,
 )
 
-MODEL_PATH = "data/06_models/best_model_automl.pkl"
-COLUMNS_PATH = "data/06_models/model_columns.pkl"
-DATA_PATH = "data/01_raw/data1.csv"
+DATA_BLOB = "data1.csv"
+MODEL_BLOB = "best_model_automl.pkl"
+COLUMNS_BLOB = "model_columns.pkl"
 
 @st.cache_data(show_spinner=False)
 def load_reference():
-    if not os.path.isfile(DATA_PATH):
-        raise FileNotFoundError(f"Nie znaleziono pliku danych: {DATA_PATH}")
-    if not os.path.isfile(COLUMNS_PATH):
-        raise FileNotFoundError("Brakuje pliku z listą kolumn modelu (model_columns.pkl)")
-
-    df = pd.read_csv(DATA_PATH)
+    df = load_blob_df(DATA_BLOB)
     df = clean_data(df)
 
     unique_vals = {
@@ -33,18 +31,13 @@ def load_reference():
         "stops": sorted(df["stops"].dropna().unique()),
     }
 
-    with open(COLUMNS_PATH, "rb") as f:
-        feature_columns = pickle.load(f)
+    feature_columns = load_blob_pickle(COLUMNS_BLOB)
 
     return unique_vals, feature_columns
 
 @st.cache_resource(show_spinner=False)
 def load_model():
-    if not os.path.isfile(MODEL_PATH):
-        raise FileNotFoundError(f"Nie znaleziono modelu: {MODEL_PATH}")
-    with open(MODEL_PATH, "rb") as f:
-        model = pickle.load(f)
-    return model
+    return load_blob_pickle(MODEL_BLOB)
 
 def main():
     st.title("✈️ Flight Price Prediction")
